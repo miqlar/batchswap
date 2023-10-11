@@ -13,7 +13,7 @@ function eth(n) {
   return ethers.utils.parseEther(n.toString());
 }
 
-  describe("uniswap V2 tests", () => {
+describe("uniswap V2 tests", () => {
     let Token, token1, token2, factory, router;
 
     beforeEach(async () => {
@@ -124,14 +124,143 @@ function eth(n) {
                 { value: eth(0.1) }
             );
 
-            // Get the transaction receipt
             const receipt = await tx.wait();
-
-            // You can access various properties of the receipt, such as the gas used:
-            console.log("Gas used:", receipt.gasUsed.toString());
+            console.log("ETH->Token swap gas:", receipt.gasUsed.toString());
   
           });
 
 
+          it("see gas usage of Token->ETH swap", async () => {
+
+            const weth_address = await router.WETH()
+            await factory.createPair(token3.address, weth_address);
+  
+            await token3.approve(router.address, (10000));
+  
+            await router.addLiquidityETH(
+                token3.address,
+                (10000),
+                0,
+                0,
+                owner.address,
+                ethers.constants.MaxUint256,
+                { value: eth(0.5) }
+            );
+
+            await token3.transfer(addr2.address, 1000)
+  
+            // Set up the path for the token to WETH to ETH
+            const path = [token3.address, weth_address];
+
+            // Approve the Router to spend your tokens
+            await token3.connect(addr2).approve(router.address, 100);
+
+            // Perform the transaction to sell tokens for ETH
+            const tx = await router.connect(addr2).swapExactTokensForETH(
+                100,      // Amount of tokens to sell
+                0,             // Minimum amount of ETH to receive (can be adjusted)
+                path,          // Path from token to ETH
+                addr2.address, // Recipient address for ETH
+                ethers.constants.MaxUint256, // Deadline
+            );
+
+            // Get the transaction receipt
+            const receipt = await tx.wait();
+            console.log("Token->ETH swap gas:", receipt.gasUsed.toString());
+          });
+
+          it("see gas usage of Token->Token swap", async () => {
+
+            await factory.createPair(token3.address, token2.address);
+  
+            await token2.approve(router.address, (10000));
+            await token3.approve(router.address, (10000));
+  
+            await router.addLiquidity(
+                token3.address,
+                token2.address,
+                (10000),
+                (10000),
+                0,
+                0,
+                owner.address,
+                ethers.constants.MaxUint256
+            );
+
+            await token3.transfer(addr2.address, 1000)
+  
+            // Set up the path for the token to WETH to ETH
+            const path = [token3.address, token2.address];
+
+            // Approve the Router to spend your tokens
+            await token3.connect(addr2).approve(router.address, 100);
+
+            // Perform the transaction to sell tokens for ETH
+            const tx = await router.connect(addr2).swapExactTokensForTokens(
+                100,      // Amount of tokens to sell
+                0,             // Minimum amount of Tokens to receive (can be adjusted)
+                path,          // Path from token to ETH
+                addr2.address, // Recipient address for ETH
+                ethers.constants.MaxUint256, // Deadline
+            );
+
+            // Get the transaction receipt
+            const receipt = await tx.wait();
+            console.log("Token->Token swap gas:", receipt.gasUsed.toString());
+          });
+
+
+          it("see gas usage of Token->WETH->Token swap", async () => {
+
+            const weth_address = await router.WETH()
+            await factory.createPair(token2.address, weth_address);
+            await factory.createPair(token3.address, weth_address);
+
+            await token2.approve(router.address, (10000));
+            await token3.approve(router.address, (10000));
+
+            await router.addLiquidityETH(
+                token2.address,
+                (10000),
+                0,
+                0,
+                owner.address,
+                ethers.constants.MaxUint256,
+                { value: eth(0.5) }
+            );
+
+            await router.addLiquidityETH(
+                token3.address,
+                (10000),
+                0,
+                0,
+                owner.address,
+                ethers.constants.MaxUint256,
+                { value: eth(0.5) }
+            );
+
+            await token3.transfer(addr2.address, 1000)
+  
+            // Set up the path for the token to WETH to ETH
+            const path = [token3.address, weth_address, token2.address];
+
+            // Approve the Router to spend your tokens
+            await token3.connect(addr2).approve(router.address, 100);
+
+            // Perform the transaction to sell tokens for ETH
+            const tx = await router.connect(addr2).swapExactTokensForTokens(
+                100,      // Amount of tokens to sell
+                0,             // Minimum amount of Tokens to receive (can be adjusted)
+                path,          // Path from token to ETH
+                addr2.address, // Recipient address for ETH
+                ethers.constants.MaxUint256, // Deadline
+            );
+
+            // Get the transaction receipt
+            const receipt = await tx.wait();
+            console.log("Token->WETH->Token swap gas:", receipt.gasUsed.toString());
+          });
+
+
     });
-  });
+});
