@@ -13,7 +13,7 @@ function eth(n) {
   return ethers.utils.parseEther(n.toString());
 }
 
-  describe("uniswap tests", () => {
+  describe("uniswap V2 tests", () => {
     let Token, token1, token2, factory, router;
 
     beforeEach(async () => {
@@ -97,19 +97,6 @@ function eth(n) {
           expect(await parseInt(await token3.balanceOf(addr2.address))).to.greaterThan(0);
 
         });
-
-      //   it("aa", async () => {
-            
-      //     // let pair = await factory.getPair(token3.address, weth_address);
-      //     // console.log(pair)
-
-      //     // let pair3 = IUniswapV2Pair__factory.connect(await factory.getPair(token3.address, weth_address),owner);
-
-      //     // // How many tokens 1 does every token 0 get
-      //     // console.log((await pair3.getReserves())[1].div((await pair3.getReserves())[0]))
-
-      // });
-
 
     });
   });
