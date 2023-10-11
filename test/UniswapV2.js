@@ -98,5 +98,40 @@ function eth(n) {
 
         });
 
+        it("see gas usage of ETH->Token swap", async () => {
+
+            const weth_address = await router.WETH()
+            await factory.createPair(token3.address, weth_address);
+  
+            await token3.approve(router.address, (10000));
+  
+            await router.addLiquidityETH(
+                token3.address,
+                (10000),
+                0,
+                0,
+                owner.address,
+                ethers.constants.MaxUint256,
+                { value: eth(0.5) }
+            );
+  
+            // Perform the transaction
+            const tx = await router.connect(addr2).swapExactETHForTokens(
+                0,
+                [weth_address, token3.address],
+                addr2.address,
+                ethers.constants.MaxUint256,
+                { value: eth(0.1) }
+            );
+
+            // Get the transaction receipt
+            const receipt = await tx.wait();
+
+            // You can access various properties of the receipt, such as the gas used:
+            console.log("Gas used:", receipt.gasUsed.toString());
+  
+          });
+
+
     });
   });
