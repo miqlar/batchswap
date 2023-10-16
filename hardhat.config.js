@@ -1,5 +1,8 @@
 require("@nomicfoundation/hardhat-toolbox");
 
+require("uniswap-v3-deploy-plugin");
+require('hardhat-deploy');
+
 /** @type import('hardhat/config').HardhatUserConfig */
 module.exports = {
   solidity: {
