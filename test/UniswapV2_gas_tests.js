@@ -68,7 +68,7 @@ describe("uniswapV2 gas tests", () => {
 
     describe('uniswap v2 gas tests', () => {
 
-        it("gas usage of ETH->Token swap", async () => {
+        it.only("gas usage of ETH->Token swap", async () => {
   
             for (let addr of addresses){
                 for (let token of tokens){
@@ -100,7 +100,7 @@ describe("uniswapV2 gas tests", () => {
           });
 
 
-          it.only("gas usage of Token->ETH swap", async () => {
+          it("gas usage of Token->ETH swap", async () => {
 
             for (let addr of addresses){
                 for (let token of tokens){

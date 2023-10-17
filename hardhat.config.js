@@ -28,6 +28,14 @@ task("test-v3", "Run V3 tests", async (_, hre) => {
   }
 });
 
+task("test-minimal-batchswap-v2", "Run minimal batchswap v2", async (_, hre) => {
+  try {
+    execSync("npx hardhat test ./test/minimal_batchswap_v2.js", { stdio: "inherit" });
+  } catch (error) {
+    process.exit(1);
+  }
+});
+
 
 module.exports = {
   solidity: {
