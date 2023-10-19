@@ -345,9 +345,9 @@ abstract contract Ownable is Context {
      * NOTE: Renouncing ownership will leave the contract without an owner,
      * thereby removing any functionality that is only available to the owner.
      */
-    function renounceOwnership() public virtual onlyOwner {
-        _setOwner(address(0));
-    }
+    // function renounceOwnership() public virtual onlyOwner {
+    //     _setOwner(address(0));
+    // }
 
     /**
      * @dev Transfers ownership of the contract to a new account (`newOwner`).
@@ -366,17 +366,20 @@ abstract contract Ownable is Context {
 }
 
 
-contract BatchSwapV2 {
+contract BatchSwapV2 is Ownable{
 
     IUniswapV2Router02 public uniswapV2Router;
     IERC20 public token;
-    mapping (address => mapping (uint256 => uint256)) private outputTokens;
     address protocolFeeAddress;
 
     mapping (address => uint256) public tokenToRound;
     mapping (address => mapping (address => uint256)) roundCounter;
     mapping (address => mapping (uint256 => mapping (address => uint256))) public sharesETH;
     mapping (address => mapping (uint256 => uint256)) public totalSharesETH;
+    mapping (address => mapping (uint256 => uint256)) private outputTokens;
+
+    uint256 public protocolFeesOver10000 = 50;
+    uint256 public swapperFeesOver10000 = 100;
 
     constructor(address _uniswapRouterV2Address, address _protocolFeeAddress) {
         uniswapV2Router = IUniswapV2Router02(_uniswapRouterV2Address);
@@ -387,6 +390,13 @@ contract BatchSwapV2 {
         sharesETH[_tokenAddress][roundCounter[_tokenAddress][msg.sender]][msg.sender] += msg.value;
         totalSharesETH[_tokenAddress][roundCounter[_tokenAddress][msg.sender]] += msg.value;
         roundCounter[_tokenAddress][msg.sender] = tokenToRound[_tokenAddress];
+    }
+
+    function cancelEthDeposit(address _tokenAddress) public {
+        uint256 eth = sharesETH[_tokenAddress][roundCounter[_tokenAddress][msg.sender]][msg.sender];
+        totalSharesETH[_tokenAddress][roundCounter[_tokenAddress][msg.sender]] -= eth;
+        sharesETH[_tokenAddress][roundCounter[_tokenAddress][msg.sender]][msg.sender] = 0;
+        payable(msg.sender).transfer(eth);
     }
 
     function finishRound(address _tokenAddress) public {
@@ -411,6 +421,17 @@ contract BatchSwapV2 {
             IERC20(_tokenAddress).transfer(msg.sender, tokens);
             sharesETH[_tokenAddress][roundCounter[_tokenAddress][msg.sender]][msg.sender]=0;
         }
+    }
+
+    // --------------------------------------------------------------
+    // ------------------- SET FUNCTIONS ----------------------------
+
+    function setProtocolFeesOver10000(uint256 value) public onlyOwner {
+        protocolFeesOver10000 = value;
+    }
+
+    function setSwapperFeesOver10000(uint256 value) public onlyOwner {
+        swapperFeesOver10000 = value;
     }
 
     // --------------------------------------------------------------
