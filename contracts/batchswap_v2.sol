@@ -366,45 +366,51 @@ abstract contract Ownable is Context {
 }
 
 
-contract MinimalBatchSwapV2 {
+contract BatchSwapV2 {
 
     IUniswapV2Router02 public uniswapV2Router;
     IERC20 public token;
-    uint256 private outputTokens;
+    mapping (address => mapping (uint256 => uint256)) private outputTokens;
+    address protocolFeeAddress;
 
-    mapping (address => uint256) public sharesETH;
-    uint256 public totalSharesETH = 1; // Initialized to not gas penalize first depositor
-    uint256 public Nparticipations = 1;
+    mapping (address => uint256) public tokenToRound;
+    mapping (address => mapping (address => uint256)) roundCounter;
+    mapping (address => mapping (uint256 => mapping (address => uint256))) public sharesETH;
+    mapping (address => mapping (uint256 => uint256)) public totalSharesETH;
 
-    constructor(address _uniswapRouterV2Address, address _tokenAddress) {
+    constructor(address _uniswapRouterV2Address, address _protocolFeeAddress) {
         uniswapV2Router = IUniswapV2Router02(_uniswapRouterV2Address);
-        token = IERC20(_tokenAddress);
-        //IERC20(_tokenAddress).approve(address(uniswapV2Router), 2**256 - 1);
+        protocolFeeAddress = _protocolFeeAddress;
     }
 
-    function depositEth() public payable {
-        sharesETH[msg.sender] += msg.value;
-        totalSharesETH += msg.value;
-        Nparticipations+=1;
+    function depositEth(address _tokenAddress) public payable {
+        sharesETH[_tokenAddress][roundCounter[_tokenAddress][msg.sender]][msg.sender] += msg.value;
+        totalSharesETH[_tokenAddress][roundCounter[_tokenAddress][msg.sender]] += msg.value;
+        roundCounter[_tokenAddress][msg.sender] = tokenToRound[_tokenAddress];
     }
 
-    function finishRound() public {
-        swapEthForTokens(address(token), address(this).balance);
-        outputTokens = token.balanceOf(address(this));
+    function finishRound(address _tokenAddress) public {
+        uint256 protocolFee = totalSharesETH[_tokenAddress][tokenToRound[_tokenAddress]] * 50/10000;
+        uint256 fee = totalSharesETH[_tokenAddress][tokenToRound[_tokenAddress]] * 450/10000;
+        swapEthForTokens(address(_tokenAddress), totalSharesETH[_tokenAddress][tokenToRound[_tokenAddress]] - fee - protocolFee);
+        outputTokens[_tokenAddress][roundCounter[_tokenAddress][msg.sender]] = IERC20(_tokenAddress).balanceOf(address(this));
+        tokenToRound[_tokenAddress]+=1;
+        payable(protocolFeeAddress).transfer(protocolFee);
+        payable(msg.sender).transfer(fee);
     }
 
-    function depositEthAndFinishRound() public payable{
-        sharesETH[msg.sender] += msg.value;
-        totalSharesETH += msg.value;
-        finishRound();
+    function depositEthAndFinishRound(address _tokenAddress) public payable{
+        sharesETH[_tokenAddress][roundCounter[_tokenAddress][msg.sender]][msg.sender] += msg.value;
+        totalSharesETH[_tokenAddress][roundCounter[_tokenAddress][msg.sender]] += msg.value;
+        finishRound(_tokenAddress);
     }
 
-    function withdrawTokens() public {
-        uint256 tokens = outputTokens * sharesETH[msg.sender]/ (totalSharesETH - 1);
+    function withdrawTokens(address _tokenAddress) public {
+        uint256 tokens = outputTokens[_tokenAddress][roundCounter[_tokenAddress][msg.sender]] * sharesETH[_tokenAddress][roundCounter[_tokenAddress][msg.sender]][msg.sender]/ (totalSharesETH[_tokenAddress][roundCounter[_tokenAddress][msg.sender]]);
         if (tokens > 0){
-            token.transfer(msg.sender, tokens);
+            IERC20(_tokenAddress).transfer(msg.sender, tokens);
+            sharesETH[_tokenAddress][roundCounter[_tokenAddress][msg.sender]][msg.sender]=0;
         }
-        sharesETH[msg.sender]=0;
     }
 
     // --------------------------------------------------------------
