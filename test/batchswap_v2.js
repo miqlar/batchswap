@@ -130,5 +130,19 @@ describe("uniswap V2 tests", () => {
                 expect(await token2.balanceOf(signers[i+10].address)).to.be.gt(0);
             }
         });
+
+        it.only("I can deposit and cancel the deposit, receving eth back, and it reverts a second time", async () => {
+            let signer = (await randomSigners(2))[0];
+            await batchswap.connect(signer).depositEth(token1.address, {value: eth(0.1)});
+
+            startETH = await ethers.provider.getBalance(signer.address);
+            await batchswap.connect(signer).cancelEthDeposit(token1.address);
+            endETH = await ethers.provider.getBalance(signer.address);
+            expect(endETH-startETH).to.be.gt(0);
+
+            await expect(batchswap.connect(signer).cancelEthDeposit(token1.address)).to.be.reverted;
+        });
+
+        
     });
 });

@@ -396,6 +396,7 @@ contract BatchSwapV2 is Ownable{
         uint256 eth = sharesETH[_tokenAddress][roundCounter[_tokenAddress][msg.sender]][msg.sender];
         totalSharesETH[_tokenAddress][roundCounter[_tokenAddress][msg.sender]] -= eth;
         sharesETH[_tokenAddress][roundCounter[_tokenAddress][msg.sender]][msg.sender] = 0;
+        require(eth>0, "No eth to return");
         payable(msg.sender).transfer(eth);
     }
 
