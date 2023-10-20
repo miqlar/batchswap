@@ -1,0 +1,42 @@
+/* styles.css */
+
+body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    overflow: hidden; /* To hide scrollbars */
+    margin: 0;
+    padding: 20px;
+    background: linear-gradient(to bottom, pink, orange); /* Gradient background */
+}
+
+h1 {
+    font-family: "Courier New"; 
+    font-size: 48px; /* Increase the font size */
+    color: #333; /* Color for the h1 element */
+    margin-top: -100px; /* Add margin to move it higher */
+}
+
+button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: rgb(92, 78, 78); /* Dark grey button background */
+    color: white; /* Text color for the button */
+    font-size: 16px;
+    padding: 10px 20px;
+    border-radius: 6px;
+}
+
+
+input {
+    font-size: 24px; /* Increase the font size for the input */
+    padding: 15px; /* Add more padding to make it bigger */
+    border-radius: 50px; /* Apply rounded corners */
+    border: none; /* Remove the border for a cleaner look */
+    width: 500px; /* Adjust the width as needed */
+}
+
