@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Batchswap</title>
+    <title>BatchSwap</title>
     <link rel="stylesheet" type="text/css" href="css/styles.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/web3/1.7.4-rc.1/web3.min.js"></script>
     </head>
@@ -10,7 +10,41 @@
     <button id="connectButton" onclick="connect()">Connect Wallet</button>
 
     <h1>Batchswap</h1>
-    <input type="text" id="ethereumAddress" placeholder="Enter Token Address">
+    <input type="text" id="ethereumAddress" placeholder="Enter ERC20 Token Address">
+    <div id="result" style="display: none;">
+        <!--<table id="token-info"></table>-->
+        <div class="infos">
+            <div id="token-found"></div>
+            <div id="pool-found"></div>
+        </div>
+        <div id="numbers">
+            <div class="number-container">
+                <span class="small-text">Your deposit</span>
+                <div class="number" id="number1">Number 1</div>
+            </div>
+            <div class="number-container">
+                <span class="small-text">Total ETH deposited</span>
+                <div class="number" id="number2">Number 2</div>
+            </div>
+            <div class="number-container">
+                <span class="small-text">Swapper prize</span>
+                <div class="number" id="number3">Number 3</div>
+            </div>
+        </div>
+        <div class="container">
+            <div class="left-column">
+                <button class="contractButton" id="button1">Deposit ETH</button>
+                <button class="contractButton" id="button2">Cancel Deposit</button>
+            </div>
+            <div class="right-column">
+                <button class="contractButton" id="button3">Swap</button>
+            </div>
+            <div class="wide-button">
+                <button class="contractButton" id="button4">Deposit + Swap</button>
+            </div>
+        </div>
+    </div>
+
     <div id="error-message" style="display: none; color: red;"></div>
 
     <script src="js/script.js"></script>

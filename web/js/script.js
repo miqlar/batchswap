@@ -12,11 +12,17 @@ async function connect(){
 
 const inputField = document.getElementById('ethereumAddress'); // Get the input field by ID
 const errorMessage = document.getElementById('error-message'); // Get the error message element
+const result = document.getElementById('result'); // Get the error message element
+const TokenInfo = document.getElementById('token-found');
+const PoolExists = document.getElementById('pool-found');
+const numbers = document.getElementById('numbers');
+const number1Element = document.getElementById('number1');
+const number2Element = document.getElementById('number2');
 
 inputField.addEventListener('keyup', (event) => {
     if (event.key === 'Enter') {
-        const inputValue = inputField.value; // Get the value from the input field
-
+        let inputValue = inputField.value; // Get the value from the input field
+        inputValue = "0xBb7fDACD5269083dE9e55322AD36A9eaECAAB44c";
         // Check if the input matches the Ethereum address format (40 hexadecimal characters)
         if (isValidEthereumAddress(inputValue)) {
             console.log('Input Value:', inputValue); // Log the valid value
@@ -65,14 +71,13 @@ window.addEventListener('load', async () => {
 
 function setupContractInteraction() {
 
-    const contractAddress = '';
+    const contractAddress = '0xBb7fDACD5269083dE9e55322AD36A9eaECAAB44c';
 
     // Load the ABI from the erc20.json file
     fetch('abi/erc20.json')
         .then(response => response.json())
         .then(data => {
             const contractAbi = data; // Use the loaded ABI        
-            // Now you can interact with your contract using 'contract'
             contract = new window.web3.eth.Contract(contractAbi, contractAddress);
         })
         .catch(error => console.error('Error loading ABI:', error));
@@ -81,9 +86,15 @@ function setupContractInteraction() {
 
 async function callContractFunction() {
     try {
-        const result = await contract.methods.totalSupply().call();
-        console.log('Smart Contract Result:', result);
+        const name = await contract.methods.name().call();
+        const symbol = await contract.methods.symbol().call();
+
+        TokenInfo.textContent = "\u2705 ERC20 Token found!:" + name;
+        PoolExists.textContent = "\uD83D\uDE80 " + symbol + "/ETH pool found!";
+        result.style.display = 'block'; // Hide the result
+
     } catch (error) {
         console.error('Error calling the smart contract function:', error);
+        TokenInfo.textContent = "\uD83D\uDE1E ERC20 Token not found!:";
     }
 }

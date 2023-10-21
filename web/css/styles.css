@@ -20,7 +20,119 @@ h1 {
     margin-top: -100px; /* Add margin to move it higher */
 }
 
+
+div {
+    padding-top: 20px;
+}
+
+input {
+    font-size: 24px; /* Increase the font size for the input */
+    padding: 15px; /* Add more padding to make it bigger */
+    border-radius: 30px; /* Apply rounded corners */
+    border: none; /* Remove the border for a cleaner look */
+    width: 650px; /* Adjust the width as needed */
+}
+
+/* Center the table horizontally */
+table {
+    margin: 0 auto; /* Set horizontal margin to center the table */
+    border-collapse: collapse;
+    padding-top: 50px;
+}
+
+/* Table headers */
+th {
+    background-color: #333;
+    color: white;
+    font-weight: bold;
+    text-align: left;
+    padding: 12px; /* Increase header cell padding */
+    font-size: 24px; /* Increase font size */
+    border: 2px solid black; /* Add a black border */
+}
+
+/* Table cell styling */
+td {
+    text-align: left;
+    padding: 12px;
+    font-size: 20px; /* Increase font size */
+    border: 2px solid black; /* Add a black border */
+}
+
+
+.number-container {
+    display: inline-block;
+    text-align: center;
+    margin: 0 10px; /* Adjust the margin for spacing between numbers */
+}
+
+.small-text {
+    font-size: 14px; /* Customize the font size for the small text */
+    display: block; /* Ensure small text appears above the number */
+}
+
+.number {
+    font-size: 24px; /* Customize the font size for the number */
+    border: 3px solid black;
+    padding: 20px; 
+    width: 150px; /* Adjust the width as needed */
+}
+
+/* Style for each number
+.number {
+    display: inline-block; 
+    padding: 20px; /* Add spacing around the numbers 
+    font-size: 36px; /* Set font size 
+    border: 3px solid black; /* Add a black border 
+    margin: 0 10px; /* Add spacing between the numbers 
+} */
+
+
+.container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.left-column, .right-column {
+    flex: 1; /* Make columns expand to fill available space */
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Center items vertically within columns */
+}
+
+.left-column {
+    padding-right: 10px;
+}
+
+.right-column {
+    padding-left: 10px;
+}
+
+.wide-button {
+    flex: 0 0 100%;
+    display: flex;
+    justify-content: center; /* Center the button horizontally */
+    padding-top: 0px;
+}
+
 button {
+    padding: 10px;
+    background-color: #333;
+    color: white;
+    border: none;
+    margin: 5px 0px;
+    width: 100%; /* Make all buttons full width within their columns */
+}
+
+/* Style for the wide button (Button 4) */
+#button4 {
+    width: 100%;
+}
+
+
+#connectButton {
     position: absolute;
     top: 10px;
     right: 10px;
@@ -29,14 +141,16 @@ button {
     font-size: 16px;
     padding: 10px 20px;
     border-radius: 6px;
+    width: 14%;
 }
 
-
-input {
-    font-size: 24px; /* Increase the font size for the input */
-    padding: 15px; /* Add more padding to make it bigger */
-    border-radius: 50px; /* Apply rounded corners */
-    border: none; /* Remove the border for a cleaner look */
-    width: 500px; /* Adjust the width as needed */
+#result {
+    display: none;
+    vertical-align: top; /* Set vertical alignment to the top */
 }
 
+.infos {
+    font-size: 20px; /* Adjust the font size as needed */
+    text-align: center; /* Center the text horizontally */
+    align-items: center; /* Center the text vertically */
+}
