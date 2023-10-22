@@ -8,7 +8,7 @@ const TOKEN_ADDRESS = '0xBb7fDACD5269083dE9e55322AD36A9eaECAAB44c';
 const UNISWAP_V2_ROUTER_ADDRESS = '0xC532a74256D3Db42D0Bf7a0400fEFDbad7694008';
 const UNISWAP_V2_FACTORY_ADDRESS = '0x7e0987e5b3a30e3f2828572bb659a548460a3003';
 const WETH9_ADDRESS = '0x7b79995e5f793A07Bc00c21412e50Ecae098E7f9';
-const BATCHSWAP_ADDRESS = '0x2886522743FF22522351fd0Cfebe8C8cECCfe1AD'
+const BATCHSWAP_ADDRESS = '0x020f52bbfD07C802a982BFf7B5626e77113eC2bb'
 
 const inputField = document.getElementById('ethereumAddress'); // Get the input field by ID
 const errorMessage = document.getElementById('error-message'); // Get the error message element
@@ -270,7 +270,7 @@ async function swap(){
         if (confirmationNumber == 1) {
           console.log('Transaction confirmed');
           console.log('Transaction receipt:', receipt);
-          refreshBatchswapData();
+          refreshAndShowInterface();
         }
       });;
 }
@@ -297,7 +297,7 @@ async function depositAndSwap(){
             if (confirmationNumber == 1) {
               console.log('Transaction confirmed');
               console.log('Transaction receipt:', receipt);
-              refreshBatchswapData();
+              refreshAndShowInterface();
             }
           });;
     }
@@ -317,7 +317,6 @@ async function withdrawTokens() {
         if (confirmationNumber == 1) {
           console.log('Transaction confirmed');
           console.log('Transaction receipt:', receipt);
-
           refreshAndShowInterface();
     }});
 }
