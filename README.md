@@ -2,6 +2,10 @@
 
 [batchswap.org](batchswap.org)
 
+[https://miqlar.github.io/batchswap/web/](https://miqlar.github.io/batchswap/web/)
+
+![Examples of generated and curated beaches.](web/img/batchswap.jpg)
+
 ---
 
 In periods in which mainnet is busy, clogged by activity, gas prices increase a lot.
@@ -38,6 +42,14 @@ WETH9: 0x7b79995e5f793A07Bc00c21412e50Ecae098E7f9
 
 ERC20 test token: 0xBb7fDACD5269083dE9e55322AD36A9eaECAAB44c
 Batchswap contract: 0x020f52bbfD07C802a982BFf7B5626e77113eC2bb
+```
+
+## Run it Locally
+
+A webserver needs to be spawned, because metamask does not work correctly if not.
+
+```
+python3 -m http.server 9000
 ```
 
 
