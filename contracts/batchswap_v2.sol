@@ -387,6 +387,7 @@ contract BatchSwapV2 is Ownable{
     }
 
     function depositEth(address _tokenAddress) public payable {
+        require(getTokensToWithdraw(_tokenAddress) == 0);
         sharesETH[_tokenAddress][tokenToLastRound[_tokenAddress]][msg.sender] += msg.value;
         totalSharesETH[_tokenAddress][tokenToLastRound[_tokenAddress]] += msg.value;
         userToLastRoundDeposited[_tokenAddress][msg.sender] = tokenToLastRound[_tokenAddress];
