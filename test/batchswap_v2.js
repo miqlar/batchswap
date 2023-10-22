@@ -93,45 +93,45 @@ describe("uniswap V2 tests", () => {
         it("2x tokens, 10 depositors, 1 depositEthAndFinishRound, 10 withdraws", async () => {
             let signers = await randomSigners(100);
             for (let i = 0; i < 10; i++) {
-                let tx = await batchswap.connect(signers[i+10]).depositEth(token1.address, {value: eth(0.1)});
+                let tx = await batchswap.connect(signers[i+30]).depositEth(token1.address, {value: eth(0.1)});
                 let receipt = await tx.wait();
                 console.log(`depositEth() gas used: ${receipt.gasUsed.toString()}`);
             }
 
             for (let i = 0; i < 10; i++) {
-                let tx = await batchswap.connect(signers[i+10]).depositEth(token2.address, {value: eth(0.1)});
+                let tx = await batchswap.connect(signers[i+30]).depositEth(token2.address, {value: eth(0.1)});
                 let receipt = await tx.wait();
                 console.log(`depositEth() gas used: ${receipt.gasUsed.toString()}`);
             }
             
             let startETH = await ethers.provider.getBalance(burn_address);
-            let tx = await batchswap.connect(signers[0]).depositEthAndFinishRound(token1.address, {value: eth(0.5)});
+            let tx = await batchswap.connect(signers[0]).depositEthAndFinishRound(token1.address, {value: eth(0.2)});
             let receipt = await tx.wait();
             console.log(`depositEthAndFinishRound() gas used: ${receipt.gasUsed.toString()}`);
             expect((await ethers.provider.getBalance(burn_address)) - startETH).to.be.gt(0);
 
             startETH = await ethers.provider.getBalance(burn_address);
-            tx = await batchswap.connect(signers[0]).depositEthAndFinishRound(token2.address, {value: eth(0.5)});
+            tx = await batchswap.connect(signers[0]).depositEthAndFinishRound(token2.address, {value: eth(0.2)});
             receipt = await tx.wait();
             console.log(`depositEthAndFinishRound() gas used: ${receipt.gasUsed.toString()}`);
             expect((await ethers.provider.getBalance(burn_address)) - startETH).to.be.gt(0);
 
             for (let i = 0; i < 10; i++) {
-                let tx = await batchswap.connect(signers[i+10]).withdrawTokens(token1.address);
+                let tx = await batchswap.connect(signers[i+30]).withdrawTokens(token1.address);
                 let receipt = await tx.wait();
                 console.log(`withdrawTokens() gas used: ${receipt.gasUsed.toString()}`);
-                expect(await token1.balanceOf(signers[i+10].address)).to.be.gt(0);
+                expect(await token1.balanceOf(signers[i+30].address)).to.be.gt(0);
             }
 
             for (let i = 0; i < 10; i++) {
-                let tx = await batchswap.connect(signers[i+10]).withdrawTokens(token2.address);
+                let tx = await batchswap.connect(signers[i+30]).withdrawTokens(token2.address);
                 let receipt = await tx.wait();
                 console.log(`withdrawTokens() gas used: ${receipt.gasUsed.toString()}`);
-                expect(await token2.balanceOf(signers[i+10].address)).to.be.gt(0);
+                expect(await token2.balanceOf(signers[i+30].address)).to.be.gt(0);
             }
         });
 
-        it.only("I can deposit and cancel the deposit, receving eth back, and it reverts a second time", async () => {
+        it("I can deposit and cancel the deposit, receving eth back, and it reverts a second time", async () => {
             let signer = (await randomSigners(2))[0];
             await batchswap.connect(signer).depositEth(token1.address, {value: eth(0.1)});
 
@@ -143,6 +143,6 @@ describe("uniswap V2 tests", () => {
             await expect(batchswap.connect(signer).cancelEthDeposit(token1.address)).to.be.reverted;
         });
 
-        
+
     });
 });

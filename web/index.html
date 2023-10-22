@@ -7,19 +7,21 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/web3/1.7.4-rc.1/web3.min.js"></script>
     </head>
 <body>
+
     <button id="connectButton" onclick="connect()">Connect Wallet</button>
 
-    <h1>Batchswap</h1>
+    <h1>BatchSwap</h1>
     <input type="text" id="ethereumAddress" placeholder="Enter ERC20 Token Address">
-    <div id="result" style="display: none;">
-        <!--<table id="token-info"></table>-->
-        <div class="infos">
-            <div id="token-found"></div>
-            <div id="pool-found"></div>
-        </div>
+
+    <div class="infos">
+        <div id="token-found" style="display: none;"></div>
+        <div id="pool-found" style="display: none;"></div>
+    </div>
+
+    <div id="result" style="display: none;">  
         <div id="numbers">
             <div class="number-container">
-                <span class="small-text">Your deposit</span>
+                <span class="small-text">Your ETH deposit</span>
                 <div class="number" id="number1">Number 1</div>
             </div>
             <div class="number-container">
@@ -27,26 +29,45 @@
                 <div class="number" id="number2">Number 2</div>
             </div>
             <div class="number-container">
-                <span class="small-text">Swapper prize</span>
+                <span class="small-text">Swapper ETH prize</span>
                 <div class="number" id="number3">Number 3</div>
-            </div>
         </div>
-        <div class="container">
+        </div>
+        <div class="container" id="deposit-container">
             <div class="left-column">
-                <button class="contractButton" id="button1">Deposit ETH</button>
-                <button class="contractButton" id="button2">Cancel Deposit</button>
+                <input type="text" id="depositAmount" placeholder="Deposit amount (ETH)">
             </div>
             <div class="right-column">
-                <button class="contractButton" id="button3">Swap</button>
+            </div>
+        </div>
+        <div class="container" id="buttons-container">
+            <div class="left-column">
+                <button class="contractButton" id="button1" onclick="deposit()" >Deposit ETH</button>
+                <button class="contractButton" id="button2" onclick="cancelDeposit()">Cancel Deposit</button>
+            </div>
+            <div class="right-column">
+                <button class="contractButton" id="button3" onclick="swap()">Swap</button>
             </div>
             <div class="wide-button">
-                <button class="contractButton" id="button4">Deposit + Swap</button>
+                <button class="contractButton" id="button4" onclick="depositAndSwap()">Deposit + Swap</button>
             </div>
         </div>
     </div>
+    <div id="withdrawalInfo" style="display: none;">
+        <div class="number-container">
+            <span class="small-text">Tokens to withdraw</span>
+            <div class="number" id="number4">Number 4</div>
+        </div>
+        <div class="wide-button">
+            <button class="contractButton" id="button5" onclick="withdrawTokens()">Withdraw ERC20 Tokens</button>
+        </div>
+    </div>
+
+
 
     <div id="error-message" style="display: none; color: red;"></div>
 
     <script src="js/script.js"></script>
+
 </body>
 </html>

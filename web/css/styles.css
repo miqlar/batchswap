@@ -25,12 +25,20 @@ div {
     padding-top: 20px;
 }
 
-input {
+#ethereumAddress {
     font-size: 24px; /* Increase the font size for the input */
     padding: 15px; /* Add more padding to make it bigger */
     border-radius: 30px; /* Apply rounded corners */
     border: none; /* Remove the border for a cleaner look */
     width: 650px; /* Adjust the width as needed */
+}
+
+#depositAmount {
+    font-size: 18px; /* Increase the font size for the input */
+    padding: 15px; /* Add more padding to make it bigger */
+    border-radius: 30px; /* Apply rounded corners */
+    border: none; /* Remove the border for a cleaner look */
+    width: 90%; /* Adjust the width as needed */
 }
 
 /* Center the table horizontally */
@@ -93,6 +101,7 @@ td {
     flex-wrap: wrap;
     justify-content: space-between;
     align-items: flex-start;
+    padding-top:0px; 
 }
 
 .left-column, .right-column {
@@ -153,4 +162,12 @@ button {
     font-size: 20px; /* Adjust the font size as needed */
     text-align: center; /* Center the text horizontally */
     align-items: center; /* Center the text vertically */
+}
+
+#deposit-container{
+    padding-top: 40px;
+}
+
+#button5{
+    margin-top: 40px;
 }

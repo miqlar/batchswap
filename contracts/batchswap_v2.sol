@@ -372,11 +372,11 @@ contract BatchSwapV2 is Ownable{
     IERC20 public token;
     address protocolFeeAddress;
 
-    mapping (address => uint256) public tokenToRound;
-    mapping (address => mapping (address => uint256)) roundCounter;
+    mapping (address => uint256) public tokenToLastRound;
+    mapping (address => mapping (address => uint256)) userToLastRoundDeposited;
     mapping (address => mapping (uint256 => mapping (address => uint256))) public sharesETH;
     mapping (address => mapping (uint256 => uint256)) public totalSharesETH;
-    mapping (address => mapping (uint256 => uint256)) private outputTokens;
+    mapping (address => mapping (uint256 => uint256)) private roundOutputTokens;
 
     uint256 public protocolFeesOver10000 = 50;
     uint256 public swapperFeesOver10000 = 100;
@@ -387,41 +387,64 @@ contract BatchSwapV2 is Ownable{
     }
 
     function depositEth(address _tokenAddress) public payable {
-        sharesETH[_tokenAddress][roundCounter[_tokenAddress][msg.sender]][msg.sender] += msg.value;
-        totalSharesETH[_tokenAddress][roundCounter[_tokenAddress][msg.sender]] += msg.value;
-        roundCounter[_tokenAddress][msg.sender] = tokenToRound[_tokenAddress];
+        sharesETH[_tokenAddress][tokenToLastRound[_tokenAddress]][msg.sender] += msg.value;
+        totalSharesETH[_tokenAddress][tokenToLastRound[_tokenAddress]] += msg.value;
+        userToLastRoundDeposited[_tokenAddress][msg.sender] = tokenToLastRound[_tokenAddress];
     }
 
     function cancelEthDeposit(address _tokenAddress) public {
-        uint256 eth = sharesETH[_tokenAddress][roundCounter[_tokenAddress][msg.sender]][msg.sender];
-        totalSharesETH[_tokenAddress][roundCounter[_tokenAddress][msg.sender]] -= eth;
-        sharesETH[_tokenAddress][roundCounter[_tokenAddress][msg.sender]][msg.sender] = 0;
+        uint256 eth = sharesETH[_tokenAddress][userToLastRoundDeposited[_tokenAddress][msg.sender]][msg.sender];
+        totalSharesETH[_tokenAddress][userToLastRoundDeposited[_tokenAddress][msg.sender]] -= eth;
+        sharesETH[_tokenAddress][userToLastRoundDeposited[_tokenAddress][msg.sender]][msg.sender] = 0;
         require(eth>0, "No eth to return");
         payable(msg.sender).transfer(eth);
     }
 
     function finishRound(address _tokenAddress) public {
-        uint256 protocolFee = totalSharesETH[_tokenAddress][tokenToRound[_tokenAddress]] * 50/10000;
-        uint256 fee = totalSharesETH[_tokenAddress][tokenToRound[_tokenAddress]] * 450/10000;
-        swapEthForTokens(address(_tokenAddress), totalSharesETH[_tokenAddress][tokenToRound[_tokenAddress]] - fee - protocolFee);
-        outputTokens[_tokenAddress][roundCounter[_tokenAddress][msg.sender]] = IERC20(_tokenAddress).balanceOf(address(this));
-        tokenToRound[_tokenAddress]+=1;
+        uint256 protocolFee = totalSharesETH[_tokenAddress][tokenToLastRound[_tokenAddress]] * protocolFeesOver10000/10000;
+        uint256 fee = totalSharesETH[_tokenAddress][tokenToLastRound[_tokenAddress]] * swapperFeesOver10000/10000;
+        uint256 startTokens = IERC20(_tokenAddress).balanceOf(address(this));
+        swapEthForTokens(address(_tokenAddress), totalSharesETH[_tokenAddress][tokenToLastRound[_tokenAddress]] - fee - protocolFee);
+        roundOutputTokens[_tokenAddress][userToLastRoundDeposited[_tokenAddress][msg.sender]] = IERC20(_tokenAddress).balanceOf(address(this)) - startTokens;
+        tokenToLastRound[_tokenAddress]+=1;
         payable(protocolFeeAddress).transfer(protocolFee);
         payable(msg.sender).transfer(fee);
     }
 
     function depositEthAndFinishRound(address _tokenAddress) public payable{
-        sharesETH[_tokenAddress][roundCounter[_tokenAddress][msg.sender]][msg.sender] += msg.value;
-        totalSharesETH[_tokenAddress][roundCounter[_tokenAddress][msg.sender]] += msg.value;
+        sharesETH[_tokenAddress][tokenToLastRound[_tokenAddress]][msg.sender] += msg.value;
+        totalSharesETH[_tokenAddress][tokenToLastRound[_tokenAddress]] += msg.value;
         finishRound(_tokenAddress);
     }
 
     function withdrawTokens(address _tokenAddress) public {
-        uint256 tokens = outputTokens[_tokenAddress][roundCounter[_tokenAddress][msg.sender]] * sharesETH[_tokenAddress][roundCounter[_tokenAddress][msg.sender]][msg.sender]/ (totalSharesETH[_tokenAddress][roundCounter[_tokenAddress][msg.sender]]);
+        uint256 tokens = roundOutputTokens[_tokenAddress][userToLastRoundDeposited[_tokenAddress][msg.sender]] * sharesETH[_tokenAddress][userToLastRoundDeposited[_tokenAddress][msg.sender]][msg.sender]/ (totalSharesETH[_tokenAddress][userToLastRoundDeposited[_tokenAddress][msg.sender]]);
         if (tokens > 0){
             IERC20(_tokenAddress).transfer(msg.sender, tokens);
-            sharesETH[_tokenAddress][roundCounter[_tokenAddress][msg.sender]][msg.sender]=0;
+            sharesETH[_tokenAddress][userToLastRoundDeposited[_tokenAddress][msg.sender]][msg.sender]=0;
         }
+    }
+
+    // --------------------------------------------------------------
+    // ------------------- VIEW FUNCTIONS ---------------------------
+
+    function getDepositedETH(address _tokenAddress) public view returns (uint256){
+        return sharesETH[_tokenAddress][userToLastRoundDeposited[_tokenAddress][msg.sender]][msg.sender];
+    }
+
+    function getTotalDepositedETH(address _tokenAddress) public view returns (uint256){
+        return totalSharesETH[_tokenAddress][tokenToLastRound[_tokenAddress]];
+    }
+
+    function getSwapperETHprize(address _tokenAddress) public view returns (uint256){
+        return totalSharesETH[_tokenAddress][tokenToLastRound[_tokenAddress]] * 450/10000;
+    }
+
+    function getTokensToWithdraw(address _tokenAddress) public view returns (uint256){
+        if (totalSharesETH[_tokenAddress][userToLastRoundDeposited[_tokenAddress][msg.sender]] == 0){
+            return 0;
+        }
+        return roundOutputTokens[_tokenAddress][userToLastRoundDeposited[_tokenAddress][msg.sender]] * sharesETH[_tokenAddress][userToLastRoundDeposited[_tokenAddress][msg.sender]][msg.sender]/ (totalSharesETH[_tokenAddress][userToLastRoundDeposited[_tokenAddress][msg.sender]]);
     }
 
     // --------------------------------------------------------------
