@@ -8,15 +8,20 @@
 
 ---
 
-In periods in which mainnet is busy, clogged by activity, gas prices increase a lot.
+### Summary
+A contract in which users can deposit ETH that gets batched and swapped for any token in UniswapV2. Benefit is saving gas in periods of high gas price, saving more than 50% of the swap cost, while the swapper gets a % of the value swapped as incentive to do so.
 
-Swaps are one of the most common operations to perform, but in these periods, they become prohibitively expensive, only allowing whales to trade.
 
-Batchswap is a solution to this - a uniswap wrapper that batches ETH deposits, which can be taken and swapped for the designated tokens by any liquidator address. Why would someone do this? Because the swapper gets a % of the value swapped.
+### Description
+In periods in which mainnet is busy, with a lot of activity, gas prices increase a lot.
 
-So, in numbers. Imagine 100 people want to swap in a high activity moment ETH for some popular token. They want to swap 100$ each, but swaps cost 30$ in gas. They deposit their 100$ in ETH in the batchswap contract, so now there is 10.000$ (each paying 10-15$ in gas instead). Now, a swapper comes, as the prize is 1% of the value (so 100$). He pays 40$ to do the swap (because its more expensive to batchswap than single swap), and obtains a profit of 60$.
+Swaps are one of the most common DeFi operations to perform, but in these periods, they become prohibitively expensive, only allowing whales to trade.
 
-The 100 users now how their tokens in the batchswap contract, which they can withdraw whenever they want (waiting for a period of less activity with lower gas prices, if they want).
+Batchswap is a solution to this - a uniswap wrapper that batches ETH deposits, which can be taken and swapped for the designated tokens by anyone. Why would someone do this? Because the swapper gets a % of the value swapped as a reward.
+
+So, in numbers. Imagine 100 people want to swap in a high activity moment ETH for some popular token. They want to swap 100$ each, but swaps cost 30$ in gas. They deposit their 100$ in ETH in the batchswap contract, so now there is 10.000$ pooled (each paying 10-15$ in gas instead). Now, a swapper comes, as the prize is 1% of the value (so 100$). He pays 40$ to do the swap (because its more expensive to batchswap than to do a single swap due to the complexity), and obtains a profit of 60$.
+
+The 100 users now how their tokens in the batchswap contract, which they can withdraw whenever they want (waiting for a period of less activity with lower gas prices, if prefered).
 
 
 ---
